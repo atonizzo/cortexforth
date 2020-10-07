@@ -22,9 +22,13 @@ RE      = $(TOOLSDIR)/$(PREFIX)readelf
 
 DEBUG_PRINT = 1
 
+# This is the baudrate to be used by the serial communicaton device.
+SERIAL_BAUDRATE=460800
+
 CFLAGS   = -I./asm -Wall -g
 CFLAGS  += -mthumb -Wa,-ahls
 CFLAGS  += -D__BSP__=$(BSP)
+CFLAGS  += -D__USART_BAUDRATE__=$(SERIAL_BAUDRATE)
 
 ifeq ($(BSP),nucleo_l476rg)
         CFLAGS  += -mcpu=cortex-m4
