@@ -20,14 +20,14 @@
 @                        atonizzo@gmail.com
 @                             2015-2020
 @ ------------------------------------------------------------------------------
-                .equ        ROM_VERSION, 1
                 .equ        COMPILE_EDITOR, 0
                 .equ        bsp, __BSP__
+                .equ        TERM_USART_BAUDRATE, __USART_BAUDRATE__
 
                 .syntax     unified
                 .global     start_forth
-                .global     start_forth_2
                 .thumb
+@ Set the Thumb bit in these addresses.
                 .type       start_forth, %function
                 .type       __nmi_fault, %function
                 .type       __hard_fault, %function
@@ -95,7 +95,7 @@ __usage_fault:  nop
 @ R1: Instruction Pointer
 @ R2: Parameter Stack pointer
 @ R3: Returns stack pointer
-@ R8: Address of doList (for BL instruction).
+@ R7: Address of doList (for BL instruction).
 
 @ {R0..R3, R12} are automatically saved during exceptions, so they are
 @  assigned to state functions that need to be saved.
@@ -108,11 +108,7 @@ RSP             .req        R3  @ Return Stack Pointer.
 WREG1           .req        R4  @ Working register.
 WREG2           .req        R5  @ Working register.
 WREG3           .req        R6  @ Working register.
-WREG4           .req        R7  @ Working register.
-
-@ The dolst address is constant even while executing exceptions, so it does
-@  not need to be in the list of those saved on the stack.
-DOLST_ADDR      .req        R8  @ Address of doList (for BLX instruction).
+DOLST_ADDR      .req        R7  @ Address of doList (for BLX instruction).
 
                 .equ        ASMWR, 0x20 @ Word is in CODE.
                 .equ        COMPO, 0x40 @ Word is compile only.
@@ -331,7 +327,6 @@ ram_cmove_end:
 @                          . T E X T
 @ ------------------------------------------------------------------------------
                 .text
-start_forth_2:
 start_forth:    ldr         r0, __system_reset
                 ldr         r0, [r0]
                 mov         sp, r0
@@ -1051,6 +1046,9 @@ page_strend:    .align      2, 0
                 .if          bsp == nucleo_l476rg
                 .include     "src/bsp/nucleo_l476rg/bsp.S"
                 .endif
+                .if          bsp == nucleo_f103rb
+                .include     "src/bsp/nucleo_f103rb/bsp.S"
+                .endif
 
                 .include    "src/core/terminal.S"
                 .include    "src/core/vocabulary.S"
@@ -1143,12 +1141,6 @@ words2:         .word       rdrop
                 .word       drop
                 .word       txtnormal
                 .word       exit
-
-                CODE        forth_link_address, 0, tony, tony
-                .word       0
-                m_types
-                m_next
-
 
 @ forth ( -- )
 @ Make FORTH the context vocabulary.

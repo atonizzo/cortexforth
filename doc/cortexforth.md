@@ -35,18 +35,24 @@ COLON one
 It is easier to understand the workings of the inner interpreter if the content
 of the relevant registers of the CPU are defined upfront.
 * `R0` always contains the top of the parameter stack (TOS)
-* `R1` is the instruction pointer (IP)
+* `R1` is the instruction pointer (IPP)
 * `R2` points to the Parameter Stack (PSP)
 * `R3` points to the Return Stack (RSP)
-* `R8` contains the address of doList, a piece of code that saves the IP in
+* `R7` contains the address of doList, a piece of code that saves the IP in
 the returns stack and loads a new value.
+
+Register R4 through R6 are used as working registers during some operations and
+are not guaranteed to remain the same form one word to another.
+
+The use of the first 8 registers for all the interpreter code should make an
+eventual port to Cortex-M0/M0+ devices much simpler.
 
 ### ENTER
 `ENTER` is a Forth construct that is used by COLON words to save the IP and
 load the IP register with a new value. CODE words do not have an `ENTER`
 construct and in this case there is actual executable code instead of
 `ENTER`. The Forth `ENTER` instruction is implemented by the the assembly
-instruction `BLX R8`. In this case the value of the R8 register has been
+instruction `BLX R7`. In this case the value of the R8 register has been
 preloaded with the contents of doList code and will not change. The doList
 code looks like this
 
@@ -61,13 +67,13 @@ at this part of the code through a BLX instruction the value of the `LR`
 register has its LSb set (ARM Thumb bit).
 
 The second instruction, `add IPP, lr, #1` is a bit tricky. The header of each
-word makes sure that the `blx r8` instruction that implements ENTER will be on
-a word boundary by padding the ASCII name with 0s when needed. The `blx r8`
+word makes sure that the `BLX R7` instruction that implements ENTER will be on
+a word boundary by padding the ASCII name with 0s when needed. The `BLX R7`
 assembler instruction itself is 2 bytes long and is followed by 2 bytes at 0
 to reach the next word boundary. When the instruction is
 executed the content of the `lr` register will have its bit 0 set
 (ARM Thumb bit), so it will not be pointing to the byte immediately following
-the `blx r8` instruction but rather to the one past it. By adding 1 to the `lr`
+the `BLX R7` instruction but rather to the one past it. By adding 1 to the `lr`
 register at this stage we effectively achieve two goals:
 
 - Clear the Thumb bit
@@ -170,7 +176,7 @@ word
 * Next we align, if needed, the address before the macro that implement `ENTER`
 * The `.equ` assembler directive creates a label that can be used by other
 words to reference this word for execution. Notice that we add 1 to the value
-of the program counter to account for the Thumb bit needed by the `BLX R8`
+of the program counter to account for the Thumb bit needed by the `BLX R7`
 instruction.
 * Following `ENTER` we have the Forth words. The last word is, with few
 exceptions, `exit`, which eventually resolves to `NEXT`.

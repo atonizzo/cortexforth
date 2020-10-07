@@ -598,8 +598,8 @@
 @ This function is written in assembler because it can be used as a general
 @  32 bit compare word.
                 .macro      m_sameq
-                cmp         TOS, 0
-                beq         . + 40
+                .if 0
+                cbz         TOS, . + 40
                 sub         WREG3, TOS, #1
                 POPP        WREG1, PSP
                 POPP        WREG2, PSP
@@ -612,6 +612,23 @@
                 eor         TOS, TOS
                 PUSHH       WREG2, PSP
                 PUSHH       WREG1, PSP
+                .else
+                cbz         TOS, . + 44
+                push        {IPP}
+                sub         WREG3, TOS, #1
+                POPP        WREG1, PSP
+                POPP        WREG2, PSP
+                ldr         TOS, [WREG1, WREG3]
+                ldr         IPP, [WREG2, WREG3]
+                cmp         TOS, IPP
+                bne         . + 12
+                sub         WREG3, #1
+                bcc         . - 12
+                eor         TOS, TOS
+                POP         {IPP}
+                PUSHH       WREG2, PSP
+                PUSHH       WREG1, PSP
+                .endif
                 .endm
 
 @ These are special version of some words that must be used inside code words.

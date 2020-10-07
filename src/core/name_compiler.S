@@ -102,7 +102,7 @@ uniq1:          .word       drop, exit
 @   h! ;             \ Store the character at HERE.
                 make_link   forth_link_address
                 .byte       2
-                .ascii      "c,"
+                .ascii      "h,"
                 .align      2, 0
                 .equ        hcomma, . + 1
                 ENTER

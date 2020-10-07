@@ -142,10 +142,6 @@ quit1:          .word       lbrace
 quit2:          .word       query
                 .word       dolit, eval
                 .word       catch
-
-@                .word       hex, dp, at, dot, decimal, cr
-@                .word       dolit, context_var, dolit, 64, dump
-
                 .word       qdup
                 .word       qbranch, quit2
                 .word       tprompt, at, tor
@@ -168,12 +164,6 @@ quit3:          .word       rfrom, dolit, dotok, xorr
 quit4:          .word       prese
                 .word       cr
                 .word       branch, quit1
-
-                CODE        forth_link_address, 0, delay, delay
-                movt        WREG1, 0x0050
-1:              subs        WREG1, #1
-                bne         1b
-                m_next
 
 @ cold    ( -- )
 @ The hilevel cold start sequence.
@@ -208,22 +198,5 @@ cold1:          .word       dolit, _etext_end, dolit, _data
                 .endif
 
                 .word       tboot, atexe
-
-@                .word       forth
-@                .word       context, at, dupp
-@                .word       current, dstor, overt
-@                .word       context, at, current, store
-@                .word       overt
-
-@                .word       dolit, list - 1 - 8 - 4
-@                .word       dolit, editor_dic_word
-@                .word       store
-@                .word       hex, context, at, dot, decimal, cr
-@                .word       hex, context, at, at, dot, decimal, cr
-
-@                .word       also, editor
-
-@                .word       dolit, 0, block
-
                 .word       quit
                 .word       branch, cold1

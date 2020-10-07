@@ -90,7 +90,14 @@ local_temit_var: .word      temit_var
 @       loop
 @       drop ;      \ Drop pointer.
                 CODE        forth_link_address, 0, type, types
-                m_types
+                m_forc
+                m_bran      2f
+1:              m_dupp
+                m_cat
+                m_emit
+                m_oneplus
+2:              m_nextc     1b
+                m_drop
                 m_next
 
 @ >char ( c -- c )
@@ -183,9 +190,9 @@ chnemit2:       .word       xnext, chnemit1
 @ Numbers above 9 will translate to characters starting with 'A'.
 @
 @ : digit
-@       9 swap u< 
+@       9 swap u<
 @       if                  \ If less than 9...
-@         'A' - '9' - 1 + 
+@         'A' - '9' - 1 +
 @       then + \ Add alpha offset to numbers above 9.
 @       '0' + ;                \ Make it a char.
                 COLON       forth_link_address, 0, digit, digit

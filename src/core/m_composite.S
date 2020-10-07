@@ -150,45 +150,6 @@
                 m_nfa2cfa
                 .endm
 
-@ types ( a u -- )
-@ Prints u characters starting from pointer a.
-@ : types
-@       for
-@           dup
-@           c@      \ Read character.
-@           emit
-@           1+      \ Point to next character.
-@       next
-@       drop ;      \ Drop pointer.
-                .if 1
-                .macro      m_types
-                m_forc
-                m_bran      2f
-1:              m_dupp
-                m_cat
-                m_emit
-                m_oneplus
-2:              m_nextc     1b
-                m_drop
-                .endm
-                .else
-@ TODO
-@ Try to undertsand why this version of the code compiles the m_bran targets
-@  differently for STM32F103 and STM32L476. With the values in the code the
-@  m_branc and m_nextc seems to work for L476 devices but they are 2 bytes
-@  short of the target for F103 devices.
-                .macro      m_types
-                m_forc
-                m_bran      .+36        @ 2f
-                m_dupp                  @ 1:
-                m_cat
-                m_emit
-                m_oneplus
-                m_nextc     .-46        @ 2: 1b
-                m_drop
-                .endm
-                .endif
-
                 .macro      m_for
                 m_tor
                 .endm

@@ -219,7 +219,6 @@
 @ ------------------------------------------------------------------------------
 @                               TERMINAL USART
 @ ------------------------------------------------------------------------------
-                .equ        TERM_USART_BAUDRATE, 460800
                 .equ        TERM_USART_NUMBER,  1
                 .if         TERM_USART_NUMBER == 1
                 .equ        TERM_USART_BASE, USART1_BASE
@@ -335,7 +334,7 @@
                 movi32      WREG1, TERM_USART_BASE
                 ldr         WREG2, [WREG1, USART_ISR_OFFSET]
                 ands        WREG2, #USART_ISR_TXE
-                beq         .-5     @ Don't use labels such as '1:' in macros.
+                beq         . - 6
                 strb        TOS, [WREG1, USART_TDR_OFFSET]
                .endm
 
