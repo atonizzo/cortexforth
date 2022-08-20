@@ -386,9 +386,9 @@
 @  by the 'emit' word.
                 .macro      m_uart_tx_char
                 movi32      WREG1, TERM_USART_BASE
-                ldr         WREG2, [WREG1, USART_SR_OFFSET]
+                ldr         WREG2, [WREG1, USART_SR_OFFSET]     @ 2:
                 ands        WREG2, #USART_SR_TXE
-                beq         .-6
+                beq         .-6                                 @ 2b
                 strb        TOS, [WREG1, USART_DR_OFFSET]
                 .endm
 

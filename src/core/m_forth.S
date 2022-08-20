@@ -128,8 +128,7 @@
 
                 .macro      m_zequ
                 cmp         TOS, #0
-                ite         ne
-                movne       TOS, #FALSE
+                itt         eq
                 moveq       TOS, #TRUE
                 .endm
 

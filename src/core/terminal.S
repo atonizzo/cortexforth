@@ -485,16 +485,14 @@ mapkey7:        .word       dupp, dolit, '3', equal
                 .word       qbranch, mapkey_err
                 .word       drop, dolit, 0x100 + 6, exit
 
-mapkey8:
-                .word       dupp, dolit, '5', equal
+mapkey8:        .word       dupp, dolit, '5', equal
                 .word       qbranch, mapkey9
                 .word       drop, key
                 .word       dupp, dolit, '~', equal
                 .word       qbranch, mapkey_err
                 .word       drop, dolit, 0x100 + 7, exit
 
-mapkey9:
-                .word       dupp, dolit, '6', equal
+mapkey9:        .word       dupp, dolit, '6', equal
                 .word       qbranch, mapkey_err
                 .word       drop, key
                 .word       dupp, dolit, '~', equal

@@ -221,11 +221,11 @@ DOLST_ADDR      .req        R7  @ Address of doList (for BLX instruction).
                 .word       breakpoint
                 .endm
 
-                .macro      setbits addr, bitmask
-                .word       dolit, \addr, at
-                .word       dolit, \bitmask, orrr
-                .word       dolit, \addr, store
-                .endm
+@                .macro      setbits addr, bitmask
+@                .word       dolit, \addr, at
+@                .word       dolit, \bitmask, orrr
+@                .word       dolit, \addr, store
+@                .endm
 
                 .macro      clearbits addr, bitmask
                 .word       dolit, \addr, at,
@@ -550,18 +550,9 @@ psp_reset_ptr2: .word       psp
 @     if
 @       'a' - 'A' -
 @     then ;
-                .if         0
-                COLON       forth_link_address, 0, upcase, upcase
-                .word       dupp
-                .word       dolit, 'a', dolit, 'z' + 1, within
-                .word       qbranch, upcase1
-                .word       dolit, 'a' - 'A', minus
-upcase1:        .word       exit
-                .else
                 CODE        forth_link_address, 0, upcase, upcase
                 m_upcase
                 m_next
-                .endif
 
                 .include    "src/core/name_compiler.S"
 

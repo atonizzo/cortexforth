@@ -206,7 +206,7 @@ abs1:           m_next
 @ 0<> ( n -- t )
 @ Return true if n is not 0.
                 make_link   forth_link_address
-                .byte       (ASMWR + 2)
+                .byte       (ASMWR + 3)
                 .ascii      "0<>"
                 .align      2, 0
                 .equ        znequ, . + 1
